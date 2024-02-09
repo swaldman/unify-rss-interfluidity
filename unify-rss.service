@@ -1,0 +1,20 @@
+[Unit]
+Description=Unify-RSS static (re)generation
+After=syslog.target network.target
+
+[Service]
+Type=simple
+User=unify-rss
+Group=unify-rss
+WorkingDirectory=/opt/unify-rss
+
+# we set --server=false to avoid starting an additional, unnecessary
+# "bloop" service, which is useful during development to reduce
+# build times, but unnecessary for a deployed service.
+ExecStart=/bin/bash -c "PATH=/usr/local/bin /opt/unify-rss/unify-rss-interfluidity"
+
+StandardError=journal
+StandardOutput=journal
+StandardInput=null
+
+
