@@ -3,8 +3,8 @@ Description=schedule regeneration of unify-rss feeds
 
 [Timer]
 # execute every 30 mins
-OnCalendar=*:*:0,30
-RandomizedDelaySec=10min
+OnCalendar=*:0/30
+RandomizedDelaySec=5min
 
 #File describing job to execute
 Unit=unify-rss.service
