@@ -2,6 +2,7 @@
 
 //> using scala "3.3.4"
 //> using dep "com.mchange::unify-rss:0.0.5"
+//> using jvm 21
 
 import java.net.URL
 import java.nio.file.{Path as JPath}
