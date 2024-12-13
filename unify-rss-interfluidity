@@ -1,7 +1,7 @@
 #!/usr/bin/env -S scala-cli shebang --java-opt=-Xmx1500m --server=false
 
 //> using scala "3.3.4"
-//> using dep "com.mchange::unify-rss:0.0.6"
+//> using dep "com.mchange::unify-rss:0.0.7"
 //> using jvm 21
 
 import java.net.URL
