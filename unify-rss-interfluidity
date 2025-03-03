@@ -150,6 +150,11 @@ val everything = allBlogs ++ allBlogsAndMicroblogs ++ immutable.Seq(
   SourceUrl("https://github.com/swaldman.atom"),
 )
 
+val someSubscribed = immutable.Seq(
+  SourceUrl("https://www.inoreader.com/stream/user/1005956602/tag/0.%20Tradition"),
+  SourceUrl("https://www.inoreader.com/stream/user/1005956602/tag/1.%20First%20FinEcon"),
+)
+
 val subscribedPodcastsMetaSources = immutable.Seq(
   MetaSource.OPML(URL("https://www.inoreader.com/reader/subscriptions/export/user/1005956602/label/Podcasts"), eachFeedTransformer = SubscribedPodcasts.bestAttemptEmbellish),
   MetaSource.OPML(URL("https://www.inoreader.com/reader/subscriptions/export/user/1005956602/label/Podcasts+HF"), eachFeedTransformer = SubscribedPodcasts.bestAttemptEmbellish),
@@ -175,6 +180,10 @@ val EverythingFeed = new MergedFeed.Default(baseName = "everything", sourceUrls 
   override def title(rootElems: immutable.Seq[Elem]): String = "interfluidity, everything"
   override def description(rootElems: immutable.Seq[Elem]): String = "Tracks posts to all blogs and microblogs, as well as other activity, by Steve Randy Waldman (interfludity), as well as posts to microblogs that syndicate by RSS."
 
+val SomeSubscribedFeed = new MergedFeed.Default(baseName = "some-subscribed", sourceUrls = someSubscribed, itemLimit = 100):
+  override def title(rootElems: immutable.Seq[Elem]): String = "some subscribed feeds, combined"
+  override def description(rootElems: immutable.Seq[Elem]): String = "Tracks posts to a curation of blogs and sources that syndicate by RSS."
+
 val SubscribedPodcastsFeed = new MergedFeed.Default(baseName = "subscribed-podcasts", metaSources = subscribedPodcastsMetaSources, itemLimit = 100, refreshSeconds = 1800, outputTransformer = SubscribedPodcasts.addFeedImageElement):
   override def title(rootElems: immutable.Seq[Elem]): String = "interfluidity, subscribed podcasts"
   override def description(rootElems: immutable.Seq[Elem]): String = "Tracks the podcasts to which Steve Randy Waldman is subscribed by RSS, to avoid siloing subscriptions in some single app."
@@ -187,7 +196,7 @@ val staticGenConfig =
   StaticGenConfig(
     appPathAbs = Abs("https://www.interfluidity.com/unify-rss"),
     appStaticDir = JPath.of("/home/web/public/unify-rss-interfluidity"),
-    mergedFeeds = immutable.Set(AllBlogsFeed, AllMicroblogsFeed, AllBlogsAndMicroblogsFeed, EverythingFeed, SubscribedPodcastsFeed, DaveWinerAllFeed),
+    mergedFeeds = immutable.Set(AllBlogsFeed, AllMicroblogsFeed, AllBlogsAndMicroblogsFeed, EverythingFeed, SubscribedPodcastsFeed, DaveWinerAllFeed, SomeSubscribedFeed),
     verbose = true
   )
 
