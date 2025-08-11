@@ -1,6 +1,6 @@
 #!/usr/bin/env -S scala-cli shebang --java-opt=-Xmx1500m --server=false
 
-//> using scala "3.3.5"
+//> using scala "3.3.6"
 //> using dep "com.mchange::unify-rss:0.0.9"
 //> using jvm 21
 

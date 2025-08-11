@@ -6,12 +6,12 @@ After=syslog.target network.target
 Type=simple
 User=unify-rss
 Group=unify-rss
-WorkingDirectory=/opt/unify-rss
+WorkingDirectory=/opt/unify-rss-interfluidity
 
 # we set --server=false to avoid starting an additional, unnecessary
 # "bloop" service, which is useful during development to reduce
 # build times, but unnecessary for a deployed service.
-ExecStart=/bin/bash -c "PATH=/usr/local/bin /opt/unify-rss/unify-rss-interfluidity"
+ExecStart=/bin/bash -c "PATH=/usr/bin /opt/unify-rss-interfluidity/unify-rss-interfluidity"
 
 StandardError=journal
 StandardOutput=journal
