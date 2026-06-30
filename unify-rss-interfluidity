@@ -1,7 +1,7 @@
 #!/usr/bin/env -S scala-cli shebang --java-opt=-Xmx1500m --server=false
 
 //> using scala "3.3.8"
-//> using dep "com.mchange::unify-rss:0.0.9"
+//> using dep "com.mchange::unify-rss:0.0.10"
 //> using dep "com.mchange:indexcard:0.0.1-SNAPSHOT"
 //> using jvm 21
 
@@ -335,7 +335,7 @@ val staticGenConfig =
   StaticGenConfig(
     appPathAbs = Abs("https://www.interfluidity.com/unify-rss"),
     appStaticDir = JPath.of("/home/web/public/unify-rss-interfluidity"),
-    mergedFeeds = immutable.Set(AllBlogsFeed, AllMicroblogsFeed, AllBlogsAndMicroblogsFeed, EverythingFeed, SubscribedPodcastsFeed, DaveWinerAllFeed, SomeSubscribedFeed),
+    mergedFeeds = immutable.Set(AllBlogsFeed, AllMicroblogsFeed, AllBlogsAndMicroblogsFeed, EverythingFeed, SubscribedPodcastsFeed, /*DaveWinerAllFeed,*/ SomeSubscribedFeed),
     verbose = true
   )
 
