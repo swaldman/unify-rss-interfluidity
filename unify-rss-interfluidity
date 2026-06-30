@@ -8,17 +8,18 @@
 //> using dep "com.lihaoyi::upickle:4.4.3"
 //> using jvm 21
 
+import java.io.{BufferedInputStream,FileInputStream}
 import java.net.URL
 import java.nio.file.{Path as JPath}
 import scala.collection.*
 import unstatic.UrlPath.*
+import scala.util.Using
 import scala.xml.*
 import scala.xml.transform.*
 
 import audiofluidity.rss.*
 
 import com.mchange.unifyrss.*
-
 
 object ItemSummaries:
 
@@ -28,15 +29,16 @@ object ItemSummaries:
   case class Summary(imageUrl : String, size : Long, alt : String)
 
   val summariesUrlBase = "https://www.interfluidity.com/outside-rss-summaries/"
-  val summariesDir = "/home/web/public/outside-rss-summaries"
+  val summariesDir = os.Path("/home/web/public/outside-rss-summaries")
 
   val model = "claude-sonnet-4-6"
   val anthropicApiVersion = "2023-06-01"
 
   lazy val configProps =
-    val p = new java.util.Properties()
-    p.load("/etc/unify-rss-interfluidity/unify-rss-interfluidity-secrets.properties")
-    p
+    Using.resource(new BufferedInputStream(new FileInputStream("/etc/unify-rss-interfluidity/unify-rss-interfluidity-secrets.properties"))): fis =>
+      val p = new java.util.Properties()
+      p.load(fis)
+      p
 
   lazy val claudeApiKey = configProps.getProperty("claude.api.key")
 
@@ -96,7 +98,7 @@ object ItemSummaries:
       else
         val summaryText = requestArticleSummary(url)
         val image =
-          com.mchange.indexcard.Generator(
+          com.mchange.indexcard.Generator.generate(
             s"""
               <p><b>Summary:</b></p>
 
