@@ -148,12 +148,14 @@ object ItemSummaries:
             elem
           else
             val link = links.head.trim
-            val summary = findCreateSummary(link)
-            val mediaElem =
-              <media:content url="{summary.imageUrl}" fileSize="{summary.size}" type="image/png">
-                <media:description type="plain">{summary.alt}</media:description>
-              </media:content>
-            elem.copy( child=elem.child :+ mediaElem )
+            findCreateSummary(link) match
+              case Some(summary) =>
+                val mediaElem =
+                  <media:content url="{summary.imageUrl}" fileSize="{summary.size}" type="image/png">
+                    <media:description type="plain">{summary.alt}</media:description>
+                  </media:content>
+                elem.copy( child=elem.child :+ mediaElem )
+              case None => elem
         case other => other
     val transform = new RuleTransformer(rule)
     transform(rssElem).asInstanceOf[Elem]
