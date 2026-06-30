@@ -161,7 +161,9 @@ object ItemSummaries:
                   <media:content url={summary.imageUrl} fileSize={summary.size.toString} type="image/png">
                     <media:description type="plain">{summary.alt}</media:description>
                   </media:content>
-                elem.copy( child=elem.child :+ mediaElem )
+                val oldScope = if elem.scope != null then elem.scope else TopScope
+                val newScope = NamespaceBinding("media", "http://search.yahoo.com/mrss/", oldScope) // make sure the media scope is defined
+                elem.copy( child=elem.child :+ mediaElem, scope=newScope )
               case None => elem
         case other => other
     val transform = new RuleTransformer(rule)
