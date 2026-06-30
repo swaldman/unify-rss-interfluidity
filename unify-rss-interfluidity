@@ -60,7 +60,8 @@ object ItemSummaries:
     val articleText = requests.get(url).text()
     val prompt =
       s"""Below you will find an article as HTML text. Please write a
-         |concise 200-word summary of the article. Return only the summary in plain text, as a single paragraph, with no preamble:
+         |concise summary of the article, of no more than 200 words.
+         |Return only the summary in plain text, as a single paragraph, with no preamble:
          |
          |${articleText}
          |
