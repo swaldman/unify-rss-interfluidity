@@ -96,7 +96,7 @@ object ItemSummaries:
       val encodedImagePath = summariesDir / (encoded + ".png")
       val encodedAltPath   = summariesDir / (encoded + ".alt")
 
-      val summaryImageUrl = summariesUrlBase + "encoded" + ".png"
+      val summaryImageUrl = summariesUrlBase + encoded + ".png"
 
       // first, check if we don't already have it
       if os.exists( encodedImagePath ) && os.exists( encodedAltPath ) then
