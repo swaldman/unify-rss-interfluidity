@@ -87,8 +87,8 @@ object ItemSummaries:
   def findCreateSummary( url : String ) : Option[Summary] =
     try
       val encoded = encodedUrl( url )
-      val encodedImagePath = summariesDir / encoded + ".png"
-      val encodedAltPath   = summariesDir / encoded + ".alt"
+      val encodedImagePath = summariesDir / (encoded + ".png")
+      val encodedAltPath   = summariesDir / (encoded + ".alt")
 
       val summaryImageUrl = summariesUrlBase + "encoded" + ".png"
 
@@ -136,6 +136,7 @@ object ItemSummaries:
       case e : Exception =>
         System.err.println("Exception while trying to find or generate article summary:")
         e.printStackTrace()
+        None
 
   def insertSummaries( rssElem : Elem ) : Elem =
     val rule = new RewriteRule:
