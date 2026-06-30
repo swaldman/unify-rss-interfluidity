@@ -157,7 +157,7 @@ object ItemSummaries:
             findCreateSummary(link) match
               case Some(summary) =>
                 val mediaElem =
-                  <media:content url=summary.imageUrl fileSize=summary.size type="image/png">
+                  <media:content url={summary.imageUrl} fileSize={summary.size} type="image/png">
                     <media:description type="plain">{summary.alt}</media:description>
                   </media:content>
                 elem.copy( child=elem.child :+ mediaElem )
