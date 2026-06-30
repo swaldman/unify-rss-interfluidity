@@ -42,8 +42,9 @@ object ItemSummaries:
 
   lazy val claudeApiKey = configProps.getProperty("claude.api.key")
 
-  def encodedUrl( url : String ) : String = java.net.URLEncoder.encode( url, java.nio.charset.StandardCharsets.UTF_8 )
+  val urlEncoder = java.util.Base64.getUrlEncoder()
 
+  def encodedUrl( url : String ) : String = urlEncoder.encodeToString( url.getBytes("UTF8") )
 
   // largely Claude-written code to access Claude...
 
@@ -53,13 +54,14 @@ object ItemSummaries:
   case class MessagesResponse(content: List[ContentBlock]) derives ReadWriter
 
   def requestArticleSummary( url : String ) : String =
+    val articleText = requests.get(url).text()
     val prompt =
-      s"""Please fetch and read the article at the following URL, then write a
-         |concise 200-word summary of its main points:
+      s"""Below you will find an article as HTML text. Please write a
+         |concise 200-word summary of the article. Return only the summary in plain text, as a single paragraph, with no preamble:
          |
-         |$url
+         |${articleText}
          |
-         |Return only the summary text, as a single paragraph, with no preamble.""".stripMargin
+         |""".stripMargin
 
     val requestBody = MessagesRequest(
       model      = model,
