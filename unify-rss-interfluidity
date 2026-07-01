@@ -136,12 +136,11 @@ object ItemSummaries:
             #indexcard .credits {
               font-size: 10pt;
               line-height: 11pt;
-              text-align: right;
               font-family: Tahoma, Verdana, sans-serif;
               padding-left: 2em;
             }
             hr {
-              width: 80%;
+              width: 90%;
               border: 1px solid black;
             }
             """,
