@@ -115,6 +115,8 @@ object ItemSummaries:
 
               <p>${summaryText}</p>
 
+              <hr>
+
               <p class="credits">
               teaser of<br>
               ${url}<br>
@@ -122,12 +124,6 @@ object ItemSummaries:
               </p>
              """,
             """
-            /* box-sizing: border-box is too quirky under FlyingSaucer's rendering engine */
-            /*
-            * {
-              box-sizing: border-box;
-            }
-            */
             #indexcard {
               width: 380px;
               border: 2px solid black;
@@ -142,7 +138,11 @@ object ItemSummaries:
               line-height: 11pt;
               text-align: right;
               font-family: Tahoma, Verdana, sans-serif;
-              padding-right: 5px; /* trying to work-around an apparent FlyingSaucer/indexcard glitch */
+              padding-left: 2em;
+            }
+            hr {
+              width: 80%;
+              border: 1px solid black;
             }
             """,
             3d
