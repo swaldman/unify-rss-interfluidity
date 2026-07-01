@@ -140,7 +140,6 @@ object ItemSummaries:
               padding-left: 2em;
             }
             hr {
-              width: 90%;
               border: 1px solid black;
             }
             """,
