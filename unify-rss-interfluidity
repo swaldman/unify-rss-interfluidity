@@ -49,7 +49,7 @@ object ItemSummaries:
 
   def encodedUrl( url : String ) : String = urlEncoder.encodeToString( url.getBytes("UTF8") )
 
-  object Anthropric:
+  object Anthropic:
     // largely Claude-written code to access Claude...
 
     case class Message(role: String, content: String) derives ReadWriter
@@ -57,7 +57,7 @@ object ItemSummaries:
     case class ContentBlock(`type`: String, text: String) derives ReadWriter
     case class MessagesResponse(content: List[ContentBlock]) derives ReadWriter
 
-    def requestArticleSummary( url : String ) : String =
+    def requestArticleTeaser( url : String ) : String =
       val articleText = requests.get(url).text()
       val prompt =
         s"""Below you will find an article as HTML text. Please write a
@@ -107,7 +107,7 @@ object ItemSummaries:
       if os.exists( encodedImagePath ) && os.exists( encodedAltPath ) then
         Some(Summary(summaryImageUrl, os.stat(encodedImagePath).size, os.read(encodedAltPath)))
       else
-        val summaryText = requestArticleSummary(url)
+        val summaryText = Anthropic.requestArticleTeaser(url)
         val image =
           com.mchange.indexcard.Generator.generate(
             s"""
@@ -166,7 +166,7 @@ object ItemSummaries:
             elem
           else
             val link = links.head.trim
-            Anthropic.findCreateSummary(link) match
+            findCreateSummary(link) match
               case Some(summary) =>
                 val mediaElem =
                   <media:content url={summary.imageUrl} fileSize={summary.size.toString} type="image/png">
