@@ -142,6 +142,7 @@ object ItemSummaries:
               line-height: 11pt;
               text-align: right;
               font-family: Tahoma, Verdana, sans-serif;
+              padding-right: 5px; /* trying to work-around an apparent FlyingSaucer/indexcard glitch */
             }
             """,
             3d
