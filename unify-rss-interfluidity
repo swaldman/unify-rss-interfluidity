@@ -34,7 +34,8 @@ object ItemSummaries:
   val summariesDir = os.Path("/home/web/public/outside-rss-summaries")
 
   //val model = "claude-sonnet-4-6"
-  val model = "claude-haiku-4-5"
+  //val model = "claude-haiku-4-5"
+  val model = "qwen3.7-plus"
   val anthropicApiVersion = "2023-06-01"
 
   lazy val configProps =
@@ -43,7 +44,8 @@ object ItemSummaries:
       p.load(fis)
       p
 
-  lazy val claudeApiKey = configProps.getProperty("claude.api.key")
+  //lazy val claudeApiKey = configProps.getProperty("claude.api.key")
+  lazy val claudeApiKey = configProps.getProperty("qwen.api.key")
 
   val urlEncoder = java.util.Base64.getUrlEncoder()
 
@@ -56,6 +58,9 @@ object ItemSummaries:
     case class MessagesRequest(model: String, max_tokens: Int, cache_control : Map[String,String], messages: List[Message]) derives ReadWriter
     case class ContentBlock(`type`: String, text: String) derives ReadWriter
     case class MessagesResponse(content: List[ContentBlock]) derives ReadWriter
+
+    // val endpointUrl = "https://api.anthropic.com/v1/messages"
+    val endpointUrl = "https://ws-a9bz3tqrw5scqnbl.ap-southeast-1.maas.aliyuncs.com/apps/anthropic"
 
     def requestArticleTeaser( url : String ) : String =
       val articleText = requests.get(url).text()
@@ -78,9 +83,9 @@ object ItemSummaries:
       )
 
       val response = requests.post(
-        "https://api.anthropic.com/v1/messages",
+        endpointUrl,
         headers = Map(
-          "x-api-key"         -> claudeApiKey,      // <-- key sent as a header
+          "x-api-key"         -> claudeApiKey,            // <-- key sent as a header
           "anthropic-version" -> anthropicApiVersion,
           "content-type"      -> "application/json"
         ),
