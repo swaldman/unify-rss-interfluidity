@@ -73,6 +73,7 @@ object ItemTeasers:
       val prompt =
         s"""Below you will find an article as HTML text. Please write a
            |concise "teaser" for the article, of no more than 150 words.
+           |Keep it punchy: 150 words is a max, but shorter is fine, don't add unnecessary padding.
            |The teaser should describe the subject of the article, but not fully summarize it,
            |leaving readers to check out the article to know where it lands and to experience the writing.
            |Return the teaser in plain text, as a single paragraph, with no preamble:
