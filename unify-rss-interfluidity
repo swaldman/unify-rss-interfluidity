@@ -338,7 +338,6 @@ val everything = allBlogs ++ allBlogsAndMicroblogs ++ immutable.Seq(
 val someSubscribed = immutable.Seq(
   SourceUrl("https://www.inoreader.com/stream/user/1005956602/tag/0.%20Tradition"),
   SourceUrl("https://www.inoreader.com/stream/user/1005956602/tag/1.%20First%20FinEcon"),
-  SourceUrl("https://thejackpot.blog/frontpage.xml"), // should be included in tradition above, but seems not to be due maybe to an inoreader glitch? feed has an empty title.
 )
 
 val subscribedPodcastsMetaSources = immutable.Seq(
