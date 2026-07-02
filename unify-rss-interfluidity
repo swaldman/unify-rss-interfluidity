@@ -3,6 +3,7 @@
 //> using scala "3.3.8"
 //> using dep "com.mchange:indexcard:0.0.1-SNAPSHOT"
 //> using dep "com.mchange::unify-rss:0.0.10"
+//> using dep "com.mchange::cryptoutil:0.0.4"
 //> using dep "com.lihaoyi::os-lib:0.11.7"
 //> using dep "com.lihaoyi::requests:0.9.2"
 //> using dep "com.lihaoyi::upickle:4.4.3"
@@ -48,9 +49,9 @@ object ItemTeasers:
   //lazy val claudeApiKey = configProps.getProperty("claude.api.key")
   lazy val claudeApiKey = configProps.getProperty("qwen.api.key")
 
-  val urlEncoder = java.util.Base64.getUrlEncoder()
+  val base64Encoder = java.util.Base64.getUrlEncoder()
 
-  def encodedUrl( url : String ) : String = urlEncoder.encodeToString( url.getBytes("UTF8") )
+  def encodedUrl( url : String ) : String = base64Encoder.encodeToString( com.mchange.cryptoutil.Hash.SHA3_256.hash(url.getBytes("UTF8")).toByteArray )
 
   object Anthropic:
     // largely Claude-written code to access Claude...
