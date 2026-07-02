@@ -33,10 +33,12 @@ object ItemSummaries:
   val summariesUrlBase = "https://www.interfluidity.com/outside-rss-summaries/"
   val summariesDir = os.Path("/home/web/public/outside-rss-summaries")
 
-  //val model = "claude-sonnet-4-6"
-  //val model = "claude-haiku-4-5"
-  val model = "qwen3.7-plus"
-  
+  //val model = "claude-sonnet-4-6" // very expensive
+  //val model = "claude-haiku-4-5"  // fine teasers, but still expensive
+
+  //val model = "qwen3.7-plus"      // fine teasers
+  val model = "qwen3.6-flash"       // cheaper, let's see!
+
   lazy val configProps =
     Using.resource(new BufferedInputStream(new FileInputStream("/etc/unify-rss-interfluidity/unify-rss-interfluidity-secrets.properties"))): fis =>
       val p = new java.util.Properties()
