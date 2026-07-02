@@ -338,6 +338,7 @@ val everything = allBlogs ++ allBlogsAndMicroblogs ++ immutable.Seq(
 val someSubscribed = immutable.Seq(
   SourceUrl("https://www.inoreader.com/stream/user/1005956602/tag/0.%20Tradition"),
   SourceUrl("https://www.inoreader.com/stream/user/1005956602/tag/1.%20First%20FinEcon"),
+  SourceUrl("https://www.inoreader.com/stream/user/1005956602/tag/Substacks"),
 )
 
 val subscribedPodcastsMetaSources = immutable.Seq(
