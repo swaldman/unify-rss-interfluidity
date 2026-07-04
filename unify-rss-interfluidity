@@ -24,6 +24,8 @@ import audiofluidity.rss.*
 
 import com.mchange.unifyrss.*
 
+val NoTeasersSomeSubscribedFeed = "https://www.inoreader.com/stream/user/1005956602/tag/1.5%20No%20Teasers"
+
 object ItemTeasers:
 
   import requests.*
@@ -184,6 +186,10 @@ object ItemTeasers:
           if links.size > 1 then
             System.err.println("Encountered item with multiple links? Skipping teaser: " + elem);
             elem
+          else if ((elem \ "provenance" \ "link").map( _ \@ "href" ).contains(NoTeasersSomeSubscribedFeed))
+            // should i actually check the expected 'iffy' namespace of 'provenance' and 'atom' namespace of 'link' here?
+            System.err.println("Encountered item which, by its <iffy:provenance>, means to opt out of teasers: " + elem)
+            elem
           else
             val link = links.head.trim
             findCreateTeaser(link) match
@@ -340,6 +346,7 @@ val everything = allBlogs ++ allBlogsAndMicroblogs ++ immutable.Seq(
 val someSubscribed = immutable.Seq(
   SourceUrl("https://www.inoreader.com/stream/user/1005956602/tag/0.%20Tradition"),
   SourceUrl("https://www.inoreader.com/stream/user/1005956602/tag/1.%20First%20FinEcon"),
+  SourceUrl(NoTeasersSomeSubscribedFeed),
   SourceUrl("https://www.inoreader.com/stream/user/1005956602/tag/Substacks"),
 )
 
