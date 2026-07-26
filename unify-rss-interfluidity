@@ -37,15 +37,15 @@ object ItemTeasers:
   val teasersDir     = os.Path("/home/web/public/teasers")
 
   // anthropic endpoint and key
-  //val model = "claude-sonnet-4-6" // very expensive
-  //val model = "claude-haiku-4-5"  // fine teasers, but still expensive
+  //val model = "claude-sonnet-4-6" // very expensive, anthropic API
+  //val model = "claude-haiku-4-5"  // fine teasers, but still expensive, anthropic API
 
   // alibaba endpoint and key
-  //val model = "qwen3.7-plus"      // fine teasers
-  //val model = "qwen3.6-flash"       // cheaper, let's see!
+  //val model = "qwen3.7-plus"      // fine teasers, anthropic API
+  //val model = "qwen3.6-flash"     // cheaper, let's see!, anthropic API
 
   // openrouter endpoint and key
-  val model = "deepseek/deepseek-v4-flash"
+  val model = "deepseek/deepseek-v4-flash" // Openrouter API
 
   lazy val configProps =
     Using.resource(new BufferedInputStream(new FileInputStream("/etc/unify-rss-interfluidity/unify-rss-interfluidity-secrets.properties"))): fis =>
@@ -57,12 +57,23 @@ object ItemTeasers:
 
   def encodedUrl( url : String ) : String = base64Encoder.encodeToString( com.mchange.cryptoutil.Hash.SHA3_256.hash(url.getBytes("UTF8")).toByteArray )
 
+  def promptForArticleText(articleText : String) : String =
+    s"""Below you will find an article as HTML text. Please write a
+       |concise "teaser" for the article, of no more than 150 words.
+       |Keep it punchy: 150 words is a max, but shorter is fine, don't add unnecessary padding.
+       |The teaser should describe the subject of the article, but not fully summarize it,
+       |leaving readers to check out the article to know where it lands and to experience the writing.
+       |Return the teaser in plain text, as a single paragraph, with no preamble:
+       |
+       |${articleText}
+       |
+       |""".stripMargin
+
   object Anthropic:
     // largely Claude-written code to access Claude...
 
     //lazy val claudeApiKey = configProps.getProperty("claude.api.key")
-    //lazy val claudeApiKey = configProps.getProperty("qwen.api.key")
-    lazy val claudeApiKey   = configProps.getProperty("openrouter.api.key")
+    lazy val claudeApiKey = configProps.getProperty("qwen.api.key")
 
     val anthropicApiVersion = "2023-06-01"
 
@@ -79,17 +90,7 @@ object ItemTeasers:
 
     def requestArticleTeaser( url : String ) : String =
       val articleText = requests.get(url).text()
-      val prompt =
-        s"""Below you will find an article as HTML text. Please write a
-           |concise "teaser" for the article, of no more than 150 words.
-           |Keep it punchy: 150 words is a max, but shorter is fine, don't add unnecessary padding.
-           |The teaser should describe the subject of the article, but not fully summarize it,
-           |leaving readers to check out the article to know where it lands and to experience the writing.
-           |Return the teaser in plain text, as a single paragraph, with no preamble:
-           |
-           |${articleText}
-           |
-           |""".stripMargin
+      val prompt = promptForArticleText(articleText)
 
       val requestBody = MessagesRequest(
         model         = model,
@@ -118,6 +119,59 @@ object ItemTeasers:
         .getOrElse(throw new RuntimeException("No text block in response"))
   end Anthropic
 
+  object OpenRouter
+    val endpointUrl = "https://openrouter.ai/api/v1/chat/completions"
+
+    lazy val openrouterApiKey   = configProps.getProperty("openrouter.api.key")
+
+    val MaxTokens = 16 * 1024
+
+    val readTimeout    = 100000
+    val connectTimeout = 100000
+
+    case class Message(role: String, content: String) derives ReadWriter
+
+    case class ChatRequest(model: String, messages: Seq[Message], temperature: Double, max_tokens: Int) derives ReadWriter
+
+    // Response types. Unknown keys are ignored by default, so we only declare the
+    // fields we care about; defaults cover fields a provider might omit.
+    case class Choice(message: Message) derives ReadWriter
+
+    case class Usage( prompt_tokens: Int = 0, completion_tokens: Int = 0, total_tokens: Int = 0 ) derives ReadWriter
+
+    case class ChatResponse( choices: Seq[Choice], id: String = "", model: String = "", usage: Usage = Usage() ) derives ReadWriter:
+      def text: String = choices.headOption.map(_.message.content.trim).getOrElse("")
+
+    def requestArticleTeaser( url : String ) : String =
+      val articleText = requests.get(url).text()
+      val prompt = promptForArticleText(articleText)
+
+      val requestBody =
+        ChatRequest(
+          model = model,
+          messages = Seq(
+            Message("user", prompt)
+          ),
+          temperature = 0.2,
+          max_tokens = MaxTokens
+        )
+
+      val response = requests.post(
+        endpointUrl,
+        headers = Map(
+          "Authorization"     -> s"Bearer ${openrouterApiKey}",
+          "content-type"      -> "application/json",
+          // "HTTP-Referer" -> "https://example.com", // optional, to document the usage
+          "X-Title"           -> "RSS Teasers",        // optional, to document the usage
+        ),
+        data = write(requestBody),
+        readTimeout = readTimeout,
+        connectTimeout = connectTimeout
+      )
+
+      read[ChatResponse](response.text())
+  end OpenRouter
+
   def findCreateTeaser( url : String ) : Option[Teaser] =
     try
       val encoded = encodedUrl( url )
@@ -130,7 +184,9 @@ object ItemTeasers:
       if os.exists( encodedImagePath ) && os.exists( encodedAltPath ) then
         Some(Teaser(teaserImageUrl, os.stat(encodedImagePath).size, os.read(encodedAltPath)))
       else
-        val teaserText = Anthropic.requestArticleTeaser(url)
+        val teaserText =
+          // Anthropic.requestArticleTeaser(url)
+          OpenRouter.requestArticleTeaser(url)
         val image =
           com.mchange.indexcard.Generator.generate(
             s"""
