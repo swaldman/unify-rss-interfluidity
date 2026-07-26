@@ -36,20 +36,22 @@ object ItemTeasers:
   val teasersUrlBase = "https://www.interfluidity.com/teasers/"
   val teasersDir     = os.Path("/home/web/public/teasers")
 
+  // anthropic endpoint and key
   //val model = "claude-sonnet-4-6" // very expensive
   //val model = "claude-haiku-4-5"  // fine teasers, but still expensive
 
+  // alibaba endpoint and key
   //val model = "qwen3.7-plus"      // fine teasers
-  val model = "qwen3.6-flash"       // cheaper, let's see!
+  //val model = "qwen3.6-flash"       // cheaper, let's see!
+
+  // openrouter endpoint and key
+  val model = "deepseek/deepseek-v4-flash"
 
   lazy val configProps =
     Using.resource(new BufferedInputStream(new FileInputStream("/etc/unify-rss-interfluidity/unify-rss-interfluidity-secrets.properties"))): fis =>
       val p = new java.util.Properties()
       p.load(fis)
       p
-
-  //lazy val claudeApiKey = configProps.getProperty("claude.api.key")
-  lazy val claudeApiKey = configProps.getProperty("qwen.api.key")
 
   val base64Encoder = java.util.Base64.getUrlEncoder()
 
@@ -58,10 +60,15 @@ object ItemTeasers:
   object Anthropic:
     // largely Claude-written code to access Claude...
 
+    //lazy val claudeApiKey = configProps.getProperty("claude.api.key")
+    //lazy val claudeApiKey = configProps.getProperty("qwen.api.key")
+    lazy val claudeApiKey   = configProps.getProperty("openrouter.api.key")
+
     val anthropicApiVersion = "2023-06-01"
 
     // val endpointUrl = "https://api.anthropic.com/v1/messages"
-    val endpointUrl = "https://ws-a9bz3tqrw5scqnbl.eu-central-1.maas.aliyuncs.com/apps/anthropic/v1/messages"
+    // val endpointUrl = "https://ws-a9bz3tqrw5scqnbl.eu-central-1.maas.aliyuncs.com/apps/anthropic/v1/messages" // for direct qwen models
+    val endpointUrl = "https://openrouter.ai/api/v1/chat/completions"
 
     val readTimeout    = 100000
     val connectTimeout = 100000
