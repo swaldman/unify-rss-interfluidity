@@ -422,6 +422,10 @@ val daveWinerAllMetaSources = immutable.Seq(
   MetaSource.OPML(URL("https://feedland.com/opml?screenname=davewiner&catname=All"))
 )
 
+val iHeartRssMetaSources = immutable.Seq(
+  MetaSource.OPML(URL("https://iheartrss.com/subscriptions.opml"))
+)
+
 val AllBlogsFeed = new MergedFeed.Default(baseName = "all-blogs", sourceUrls = allBlogs, itemLimit = 25):
   override def title(rootElems: immutable.Seq[Elem]): String = "interfluidity, all blogs"
   override def description(rootElems: immutable.Seq[Elem]): String = "Collects posts to all blogs (including the main interfluidity.com, as well as drafts.interfluidity.com and tech.interfluiduty.com) by Steve Randy Waldman"
@@ -446,6 +450,10 @@ val SubscribedPodcastsFeed = new MergedFeed.Default(baseName = "subscribed-podca
   override def title(rootElems: immutable.Seq[Elem]): String = "interfluidity, subscribed podcasts"
   override def description(rootElems: immutable.Seq[Elem]): String = "Tracks the podcasts to which Steve Randy Waldman is subscribed by RSS, to avoid siloing subscriptions in some single app."
 
+val IHeartRSSFeed = new MergedFeed.Default(baseName = "i-heart-rss", metaSources = iHeartRssMetaSources, itemLimit = 100, refreshSeconds = 1800):
+  override def title(rootElems: immutable.Seq[Elem]): String = "I Heart RSS feeds"
+  override def description(rootElems: immutable.Seq[Elem]): String = "Tracks feeds that are members of https://iheartrss.com/."
+
 val DaveWinerAllFeed = new MergedFeed.Default(baseName = "dave-winer-all", metaSources = daveWinerAllMetaSources, itemLimit = 100, refreshSeconds = 1800):
   override def title(rootElems: immutable.Seq[Elem]): String = "Dave Winer subscriptions"
   override def description(rootElems: immutable.Seq[Elem]): String = "Tracks feeds Dave Winer subscribes to, discovered via http://news.scripting.com/."
@@ -454,7 +462,7 @@ val staticGenConfig =
   StaticGenConfig(
     appPathAbs = Abs("https://www.interfluidity.com/unify-rss"),
     appStaticDir = JPath.of("/home/web/public/unify-rss-interfluidity"),
-    mergedFeeds = immutable.Set(AllBlogsFeed, AllMicroblogsFeed, AllBlogsAndMicroblogsFeed, EverythingFeed, SubscribedPodcastsFeed, /*DaveWinerAllFeed,*/ SomeSubscribedFeed),
+    mergedFeeds = immutable.Set(AllBlogsFeed, AllMicroblogsFeed, AllBlogsAndMicroblogsFeed, EverythingFeed, SubscribedPodcastsFeed, IHeartRSSFeed, /*DaveWinerAllFeed,*/ SomeSubscribedFeed),
     verbose = true
   )
 
