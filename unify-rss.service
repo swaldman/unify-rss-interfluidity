@@ -7,6 +7,8 @@ Type=simple
 User=unify-rss
 Group=unify-rss
 WorkingDirectory=/opt/unify-rss-interfluidity
+RuntimeMaxSec=30min # if we do not terminate within 30 mins, we consider that a hang and dies
+TimeoutStopSec=60s  # we escalate from SIGTERM to SIGKILL after 60 seconds
 
 # we set --server=false to avoid starting an additional, unnecessary
 # "bloop" service, which is useful during development to reduce

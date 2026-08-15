@@ -280,6 +280,14 @@ object ItemTeasers:
         case other => other
     val transform = new RuleTransformer(rule)
     transform(rssElem).asInstanceOf[Elem]
+  end insertTeasers
+
+  def insertTeasersZIO( rssElem : Elem ) : zio.Task[Elem] =
+    import zio.*
+    ZIO.attemptBlockingInterrupt(insertTeasers(rssElem))
+     .timeoutFail(new Exception("Attempt to insert teasers timed out"))(12.minutes)
+     .retry(Schedule.once)
+  end insertTeasersZIO   
 
 end ItemTeasers
 
@@ -454,7 +462,7 @@ val EverythingFeed = new MergedFeed.Default(baseName = "everything", sourceUrls 
   override def title(rootElems: immutable.Seq[Elem]): String = "interfluidity, everything"
   override def description(rootElems: immutable.Seq[Elem]): String = "Tracks posts to all blogs and microblogs, as well as other activity, by Steve Randy Waldman (interfludity), as well as posts to microblogs that syndicate by RSS."
 
-val SomeSubscribedFeed = new MergedFeed.Default(baseName = "some-subscribed", sourceUrls = someSubscribed, itemLimit = 100, outputTransformer = ItemTeasers.insertTeasers):
+val SomeSubscribedFeed = new MergedFeed.Default(baseName = "some-subscribed", sourceUrls = someSubscribed, itemLimit = 100, outputTransformerZIO = ItemTeasers.insertTeasersZIO):
   override def title(rootElems: immutable.Seq[Elem]): String = "some subscribed feeds, combined"
   override def description(rootElems: immutable.Seq[Elem]): String = "Tracks posts to a curation of blogs and sources that syndicate by RSS."
 
