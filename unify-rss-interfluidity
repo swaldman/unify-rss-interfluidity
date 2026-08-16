@@ -446,6 +446,11 @@ val iHeartRssMetaSources = immutable.Seq(
   MetaSource.OPML(URL("https://iheartrss.com/subscriptions.opml"))
 )
 
+val finEconPolAllItems = immutable.Seq(
+  SourceUrl("https://drafts.interfluidity.com/all-item-feed/index.rss"),
+  SourceUrl("https://www.interfluidity.com/feed/all-posts/"),
+)
+
 val AllBlogsFeed = new MergedFeed.Default(baseName = "all-blogs", sourceUrls = allBlogs, itemLimit = 25):
   override def title(rootElems: immutable.Seq[Elem]): String = "interfluidity, all blogs"
   override def description(rootElems: immutable.Seq[Elem]): String = "Collects posts to all blogs (including the main interfluidity.com, as well as drafts.interfluidity.com and tech.interfluiduty.com) by Steve Randy Waldman"
@@ -457,6 +462,15 @@ val AllMicroblogsFeed = new MergedFeed.Default(baseName = "all-microblogs", sour
 val AllBlogsAndMicroblogsFeed = new MergedFeed.Default(baseName = "all-blogs-and-microblogs", sourceUrls = allBlogsAndMicroblogs, itemLimit = 100):
   override def title(rootElems: immutable.Seq[Elem]): String = "interfluidity, all blogs and microblogs"
   override def description(rootElems: immutable.Seq[Elem]): String = "Collects posts to all blogs and microblogs by Steve Randy Waldman (interfludity), as well as posts to microblogs that syndicate by RSS."
+
+val FinEconPolAllItemsFeed = new MergedFeed.Default(baseName = "finEconPol-all-items", sourceUrls = finEconPolAllItems):
+  override def title(rootElems: immutable.Seq[Elem]): String = "interfluidity, finance, economics, policy, and politics blogs, all items"
+  override def description(rootElems: immutable.Seq[Elem]): String = "Collects all posts by Steve Randy Waldman (interfludity) to blogs primarily devoted to finance, economics, policy, and politics."
+  override val extraChannelElems : Seq[Elem] =
+    val iffyAll = Element.Iffy.All.empty
+    val curation = Element.Iffy.Curation(iffyAll)
+    val completeness = Element.Iffy.Completeness(Element.Iffy.Completeness.Value.Content)
+    Seq(curation, completeness).map( _.toElem )
 
 val EverythingFeed = new MergedFeed.Default(baseName = "everything", sourceUrls = everything, itemLimit = 100):
   override def title(rootElems: immutable.Seq[Elem]): String = "interfluidity, everything"
@@ -482,7 +496,7 @@ val staticGenConfig =
   StaticGenConfig(
     appPathAbs = Abs("https://www.interfluidity.com/unify-rss"),
     appStaticDir = JPath.of("/home/web/public/unify-rss-interfluidity"),
-    mergedFeeds = immutable.Set(AllBlogsFeed, AllMicroblogsFeed, AllBlogsAndMicroblogsFeed, EverythingFeed, SubscribedPodcastsFeed, IHeartRSSFeed, /*DaveWinerAllFeed,*/ SomeSubscribedFeed),
+    mergedFeeds = immutable.Set(AllBlogsFeed, AllMicroblogsFeed, AllBlogsAndMicroblogsFeed, FinEconPolAllItemsFeed, EverythingFeed, SubscribedPodcastsFeed, IHeartRSSFeed, /*DaveWinerAllFeed,*/ SomeSubscribedFeed),
     verbose = true
   )
 
