@@ -436,6 +436,7 @@ val someSubscribed = immutable.Seq(
 val subscribedPodcastsMetaSources = immutable.Seq(
   MetaSource.OPML(URL("https://www.inoreader.com/reader/subscriptions/export/user/1005956602/label/Podcasts"), eachFeedTransformer = SubscribedPodcasts.bestAttemptEmbellish),
   MetaSource.OPML(URL("https://www.inoreader.com/reader/subscriptions/export/user/1005956602/label/Podcasts+HF"), eachFeedTransformer = SubscribedPodcasts.bestAttemptEmbellish),
+  MetaSource.OPML(URL("https://www.inoreader.com/reader/subscriptions/export/user/1005956602/label/Podcasts%20%E2%80%94%20Spanish"), eachFeedTransformer = SubscribedPodcasts.bestAttemptEmbellish),
 )
 
 val daveWinerAllMetaSources = immutable.Seq(
